@@ -33,7 +33,7 @@ Google Drive (Tenders/Inbox)
           PDF sent as base64 document block
           Claude extracts structured JSON
         │
-        ▼ [Code Node — Python/openpyxl]
+        ▼ [Code Node — JavaScript + ExcelJS]
           JSON → formatted Excel with formulas
         │
       ┌─┴─────────────────────┐
@@ -47,9 +47,8 @@ Tenders/Processed/
 **Stack:**
 - **n8n** — workflow orchestration (self-hosted on Hetzner CX23, Helsinki)
 - **Anthropic Claude API** — PDF parsing (Haiku 4.5 default, Sonnet 4.6 fallback)
-- **openpyxl** — Excel generation with formulas
+- **ExcelJS** — Excel generation with formatting, formulas, and dropdowns (host-mounted via NODE_PATH)
 - **Google Drive** — input/output storage + trigger
-- **Caddy** — reverse proxy with auto-TLS
 - **Docker** — containerized n8n deployment
 
 ---
@@ -78,7 +77,7 @@ Indian Railways tenders have no consistent schema. Table formatting, schedule he
 
 **Why n8n instead of a pure Python script?**
 
-Visual pipeline = auditable, modifiable by non-developers. The client can see exactly what happens at each step without reading code. Failure routing (Processed vs Failed folders) is clear and self-documenting.
+Visual pipeline = auditable, modifiable by non-developers. The client can see exactly what happens at each step without reading code. Failure routing (Processed vs Failed folders) is clear and self-documenting. Excel generation happens inside n8n's Code node — no external service needed.
 
 **Why self-hosted (Hetzner) instead of cloud functions?**
 
@@ -127,7 +126,7 @@ docker compose up -d
 # n8n UI → Settings → Import from File → n8n/workflow_export.json
 ```
 
-Full step-by-step in [`docs/deployment.md`](docs/deployment.md).
+
 
 ---
 
@@ -147,10 +146,18 @@ Tested against 3 real BCT division tenders:
 
 ## What's Next (Phase 2)
 
-- [ ] Material weightage analysis section (category-wise breakdown)  
-- [ ] Multi-tender batch processing  
-- [ ] Slack/email notification on completion  
-- [ ] Web UI for status monitoring
+Automate **Variation Statement** generation from Measurement Bank PDFs.
+
+A variation statement records how actual quantities deviated from the work order — per item, per chapter, across all schedules. Currently produced manually in Excel. Target output mirrors the standard format used by Indian Railways divisions:
+
+**Per line item:** W.O. Quantity, Actual Quantity, Excess/Saving Quantity, W.O. Amount, Actual Amount, Upto-date Amount, Excess/Saving Amount — with escalation % deduction and contingency rate deduction applied per chapter.
+
+**Pipeline:** Measurement Bank PDF → Claude API extracts recording & billing quantities → variation statement Excel generated automatically, ready for submission.
+
+- [ ] Measurement Bank PDF parsing (recording quantity + billing quantity)
+- [ ] Variation statement Excel generation per chapter/schedule
+- [ ] Billing vs recording quantity reconciliation
+- [ ] Multi-tender batch processing
 
 ---
 
@@ -158,4 +165,4 @@ Tested against 3 real BCT division tenders:
 
 Built as a client project for an Indian Railways contractor. Reduced per-tender processing time from ~3 hours to ~30 seconds.
 
-**Mohit Manglani** — [LinkedIn](https://linkedin.com/in/mohitmanglani-data) ·(mailto: manglanimohit01@gmail.com)
+**Mohit Manglani** — [LinkedIn](https://linkedin.com/in/mohitmanglani-data) · (mailto: manglanimohit01@gmail.com)
