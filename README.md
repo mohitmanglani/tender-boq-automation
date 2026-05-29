@@ -131,7 +131,7 @@ docker compose up -d
 # n8n UI → Settings → Import from File → n8n/workflow_export.json
 ```
 
-Full step-by-step in [`docs/deployment.md`](docs/deployment.md).
+
 
 ---
 
@@ -162,4 +162,4 @@ Tested against 3 real BCT division tenders:
 
 Built as a client project for an Indian Railways contractor. Reduced per-tender processing time from ~3 hours to ~30 seconds.
 
-**Mohit Manglani** — [LinkedIn](https://linkedin.com/in/mohitmanglani-data) · [mohit@maventec.in](mailto: manglanimohit01@gmail.com)
+**Mohit Manglani** — [LinkedIn](https://linkedin.com/in/mohitmanglani-data) . (mailto: manglanimohit01@gmail.com)
